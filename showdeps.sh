@@ -27,7 +27,7 @@ log()
 showdeps()              # helper: list all dependencies for a binary (shared libs)
 {
   local binary="$1"     # e.g. './foo.exe arg1 arg2' - maybe apply: export LC_ALL=C
-  local line base
+  local line base i
 
   log "# running: strace --follow-forks -e trace=file $*"
   log "#     and: LC_ALL=C ldd '$binary'"
@@ -69,10 +69,12 @@ showdeps()              # helper: list all dependencies for a binary (shared lib
    } | grep -v "$base " | grep -v ' /etc/ld.so.cache' | grep -v ' /sys/' | grep -v ' /proc/' | grep -v ' /etc/' | sort -k5,5 | uniq
   }
 
-  x "$@" ; echo && echo "list()       # deps for '$base' - generated with showdeps()" && echo "{"
-  x "$@" | awk '{print $5}' | while read -r line; do {
-    echo "      echo \"$line\""
-  } done
+  i="$( x "$@" | awk '{print $5}' | while read -r line; do echo "$( cat "$line" | md5sum | cut -d' ' -f1 )"; done | sort -u | wc -l )"
+  x "$@" ; echo && echo "list()       # all $i deps for '$base' - generated with showdeps()" && echo "{"
+  echo "    echo \"$( x "$@" | grep "$binary" | awk '{print $5}' )\""
+  x "$@" | tail -n +2 | awk '{print $5}' | while read -r line; do {
+    echo "|$( cat "$line" | md5sum | cut -d' ' -f1 )|    echo \"$line\""
+  } done | sort -u -k1,1 | cut -d'|' -f3 | sort -k2,2
   echo "}"
 }
 
