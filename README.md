@@ -39,7 +39,7 @@ $ LC_ALL=C ./showdeps.sh ./test.py
 # running: strace --follow-forks -e trace=file ./test.py
 #     and: LC_ALL=C ldd './test.py'
 
--rwxrwxr-x         45 2024-11-02 16:36 /home/bastian/software/show-full-binary-dependencies/test.py  
+-rwxrwxr-x         45 2024-11-02 16:36 /home/user/test.py  
 lrwxrwxrwx     174176 2024-10-27 17:58 /lib/x86_64-linux-gnu/libexpat.so.1 -> libexpat.so.1.9.3
 lrwxrwxrwx     125376 2024-10-29 11:32 /lib/x86_64-linux-gnu/libz.so.1 -> libz.so.1.3.1
 lrwxrwxrwx    8078272 2023-06-13 12:17 /usr/bin/python -> python3
@@ -72,7 +72,7 @@ lrwxrwxrwx    8078272 2024-09-16 17:21 /usr/bin/python3 -> python3.12
 
 list()       # all 28 deps for 'test.py' - generated with showdeps()
 {
-    echo "/home/bastian/software/show-full-binary-dependencies/test.py"
+    echo "/home/user/test.py"
     echo "/lib/x86_64-linux-gnu/libexpat.so.1"
     echo "/lib/x86_64-linux-gnu/libz.so.1"
     echo "/usr/bin/python"
