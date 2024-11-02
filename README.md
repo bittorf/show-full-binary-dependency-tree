@@ -31,10 +31,11 @@ example output (more complex, a python program):
 ------------------------------------------------
 
 ```
-bastian@ryzen:~/software/show-full-binary-dependencies$ cat test.py 
+$ cat test.py 
 #!/usr/bin/env python
 print('Hello, world!')
-bastian@ryzen:~/software/show-full-binary-dependencies$ LC_ALL=C ./showdeps.sh ./test.py
+
+$ LC_ALL=C ./showdeps.sh ./test.py
 # running: strace --follow-forks -e trace=file ./test.py
 #     and: LC_ALL=C ldd './test.py'
 
