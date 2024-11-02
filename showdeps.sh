@@ -69,11 +69,11 @@ showdeps()              # helper: list all dependencies for a binary (shared lib
    } | grep -v "$base " | grep -v ' /etc/ld.so.cache' | grep -v ' /sys/' | grep -v ' /proc/' | grep -v ' /etc/' | sort -k5,5 | uniq
   }
 
-  i="$( x "$@" | awk '{print $5}' | while read -r line; do echo "$( cat "$line" | md5sum | cut -d' ' -f1 )"; done | sort -u | wc -l )"
+  i="$( x "$@" | awk '{print $5}' | while read -r line; do md5sum <"$line" | cut -d' ' -f1; done | sort -u | wc -l )"
   x "$@" ; echo && echo "list()       # all $i deps for '$base' - generated with showdeps()" && echo "{"
   echo "    echo \"$( x "$@" | grep "$binary" | awk '{print $5}' )\""
   x "$@" | tail -n +2 | awk '{print $5}' | while read -r line; do {
-    echo "|$( cat "$line" | md5sum | cut -d' ' -f1 )|    echo \"$line\""
+    echo "|$( md5sum <"$line" | cut -d' ' -f1 )|    echo \"$line\""
   } done | sort -u -k1,1 | cut -d'|' -f3 | sort -k2,2
   echo "}"
 }

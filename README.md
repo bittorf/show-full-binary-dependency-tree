@@ -19,7 +19,7 @@ $ LC_ALL=C ./showdeps.sh /bin/true --foo
 lrwxrwxrwx     222968 2024-09-24 21:46 /lib64/ld-linux-x86-64.so.2 -> ../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
 -rwxr-xr-x    2003408 2024-09-24 21:46 /usr/lib/x86_64-linux-gnu/libc.so.6
 
-list()       # deps for 'true' - generated with showdeps()
+list()       # all 3 deps for 'true' - generated with showdeps()
 {
       echo "/usr/bin/true"
       echo "/lib64/ld-linux-x86-64.so.2"
