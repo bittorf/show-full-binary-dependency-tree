@@ -102,3 +102,43 @@ list()       # all 28 deps for 'test.py' - generated with showdeps()
     echo "/usr/lib/x86_64-linux-gnu/libm.so.6"
 }
 ```
+
+build a minimal docker container from scratch:
+----------------------------------------------
+
+this does not make much sense, busybox is only included,  
+so that one can walk around and watch from inside the container:
+
+```
+$ sudo ./build.sh "helloworld busybox"
+
+# generating Dockerfile:
+# syntax=docker/dockerfile:1
+FROM scratch
+COPY rootfs/ /
+CMD ["/bin/echo", "Hallo Welt..."]
+COPY busybox /bin
+RUN ["./bin/busybox", "--install", "-s", "/bin"]
+CMD ["/bin/sh"]
+
+# generated docker image:
+REPOSITORY                    TAG       IMAGE ID       CREATED                  SIZE
+hello                         latest    f376832aed33   Less than a second ago   5.52MB
+
+# content of docker image:
+-rwxr-xr-x 0/0               0 2024-11-05 21:50 .dockerenv
+-rwxrwxr-x 0/0         1131168 2022-01-17 19:53 bin/busybox
+-rwxr-xr-x 0/0           38240 2022-10-04 18:19 bin/echo
+-rwxr-xr-x 0/0               0 2024-11-05 21:50 dev/console
+-rw-r--r-- 0/0              10 2024-11-05 21:50 etc/group
+-rwxr-xr-x 0/0               0 2024-11-05 21:50 etc/hostname
+-rwxr-xr-x 0/0               0 2024-11-05 21:50 etc/hosts
+lrwxrwxrwx 0/0               0 2024-11-05 21:50 etc/mtab -> /proc/mounts
+-rw-r--r-- 0/0              30 2024-11-05 21:50 etc/passwd
+-rwxr-xr-x 0/0               0 2024-11-05 21:50 etc/resolv.conf
+-rwxr-xr-x 0/0         1122408 2022-09-30 07:43 lib64/ld-linux-x86-64.so.2
+-rwxr-xr-x 0/0         2093744 2022-09-30 07:43 lib64/libc.so.6
+
+# now you can run:
+# docker run -it hello
+```
