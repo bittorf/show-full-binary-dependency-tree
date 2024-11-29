@@ -10,6 +10,9 @@ EOF
 	exit 1
 }
 
+command -v 'ldd'    >/dev/null || { echo "[ERROR] please install 'ldd'"   ; exit 1; }
+command -v 'strace' >/dev/null || { echo "[ERROR] please install 'strace'"; exit 1; }
+
 log()
 {
   >&2 printf '%s\n' "$1"
