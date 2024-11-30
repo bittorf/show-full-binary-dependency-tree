@@ -111,7 +111,7 @@ showdeps()              # helper: list all dependencies for a binary (shared lib
   } >"$FILE"
 
   # shellcheck disable=SC1090,SC2046
-  cat "$FILE" && . "$FILE" && true >"$FILE" && tar cvf "$FILE" $(list) && echo "[OK] generated tarfile '$FILE'"
+  cat "$FILE" && . "$FILE" && true >"$FILE" && tar chvf "$FILE" $(list) && echo "[OK] generated tarfile '$FILE'"
 }
 
 showdeps "$@"
