@@ -11,14 +11,19 @@ EOF
 }
 
 command -v 'ls'      >/dev/null || { echo "[ERROR] please install 'ls'"     ; exit 1; }
+command -v 'rm'      >/dev/null || { echo "[ERROR] please install 'rm'"     ; exit 1; }
 command -v 'ldd'     >/dev/null || { echo "[ERROR] please install 'ldd'"    ; exit 1; }
+command -v 'tar'     >/dev/null || { echo "[ERROR] please install 'tar'"    ; exit 1; }
 command -v 'awk'     >/dev/null || { echo "[ERROR] please install 'awk'"    ; exit 1; }
 command -v 'cut'     >/dev/null || { echo "[ERROR] please install 'cut'"    ; exit 1; }
+command -v 'cat'     >/dev/null || { echo "[ERROR] please install 'cat'"    ; exit 1; }
 command -v 'grep'    >/dev/null || { echo "[ERROR] please install 'grep'"   ; exit 1; }
 command -v 'sort'    >/dev/null || { echo "[ERROR] please install 'sort'"   ; exit 1; }
 command -v 'tail'    >/dev/null || { echo "[ERROR] please install 'tail'"   ; exit 1; }
 command -v 'head'    >/dev/null || { echo "[ERROR] please install 'head'"   ; exit 1; }
 command -v 'strace'  >/dev/null || { echo "[ERROR] please install 'strace'" ; exit 1; }
+command -v 'md5sum'  >/dev/null || { echo "[ERROR] please install 'md5sum'" ; exit 1; }
+command -v 'mktemp'  >/dev/null || { echo "[ERROR] please install 'mktemp'" ; exit 1; }
 command -v 'timeout' >/dev/null || { echo "[ERROR] please install 'timeout'"; exit 1; }
 
 log()
@@ -96,12 +101,17 @@ showdeps()              # helper: list all dependencies for a binary (shared lib
   }
 
   i="$( x "$@" | awk '{print $5}' | while read -r line; do md5sum <"$line" | cut -d' ' -f1; done | sort -u | wc -l )"
-  x "$@" ; echo && echo "list()       # all $i deps for '$base' - generated with showdeps()" && echo "{"
+  x "$@" ; FILE="$( mktemp )" && echo && {
+  echo "list()       # all $i deps for '$base' - generated with showdeps()" && echo "{"
   echo "    echo \"$( x "$@" | grep "$binary" | awk '{print $5}' )\""
   x "$@" | tail -n +2 | awk '{print $5}' | while read -r line; do {
     echo "|$( md5sum <"$line" | cut -d' ' -f1 )|    echo \"$line\""
   } done | sort -u -k1,1 | cut -d'|' -f3 | sort -k2,2
   echo "}"
+  } >"$FILE"
+
+  # shellcheck disable=SC1090,SC2046
+  cat "$FILE" && . "$FILE" && true >"$FILE" && tar cvf "$FILE" $(list) && echo "[OK] generated tarfile '$FILE'"
 }
 
 showdeps "$@"
