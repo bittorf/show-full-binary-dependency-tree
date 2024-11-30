@@ -10,8 +10,16 @@ EOF
 	exit 1
 }
 
-command -v 'ldd'    >/dev/null || { echo "[ERROR] please install 'ldd'"   ; exit 1; }
-command -v 'strace' >/dev/null || { echo "[ERROR] please install 'strace'"; exit 1; }
+command -v 'ls'      >/dev/null || { echo "[ERROR] please install 'ls'"     ; exit 1; }
+command -v 'ldd'     >/dev/null || { echo "[ERROR] please install 'ldd'"    ; exit 1; }
+command -v 'awk'     >/dev/null || { echo "[ERROR] please install 'awk'"    ; exit 1; }
+command -v 'cut'     >/dev/null || { echo "[ERROR] please install 'cut'"    ; exit 1; }
+command -v 'grep'    >/dev/null || { echo "[ERROR] please install 'grep'"   ; exit 1; }
+command -v 'sort'    >/dev/null || { echo "[ERROR] please install 'sort'"   ; exit 1; }
+command -v 'tail'    >/dev/null || { echo "[ERROR] please install 'tail'"   ; exit 1; }
+command -v 'head'    >/dev/null || { echo "[ERROR] please install 'head'"   ; exit 1; }
+command -v 'strace'  >/dev/null || { echo "[ERROR] please install 'strace'" ; exit 1; }
+command -v 'timeout' >/dev/null || { echo "[ERROR] please install 'timeout'"; exit 1; }
 
 log()
 {
@@ -50,9 +58,24 @@ showdeps()              # helper: list all dependencies for a binary (shared lib
 
   x()
   {
+   local firstline shebang word
    list_file "$binary"		# stays always on top
 
    {
+    # https://stackoverflow.com/questions/41660574/strace-a-shebang-script
+    firstline="$( head -n1 "$binary" | cut -b1-256 )"
+    case "$firstline" in '#!/'*)
+      shebang="$( echo "$firstline" | cut -b3- )"
+      for word in $shebang; do {
+        list_file "$word"
+      } done
+      # shellcheck disable=SC2086
+      timeout 3 strace -f -e trace=file $shebang 2>&1 | \
+      while read -r line; do {
+        test -f "$line" && list_file "$line"
+      } done
+    esac
+
     strace -f -e trace=file "$@" 2>&1 | \
       cut -d'"' -f2 | \
       while read -r line; do {
