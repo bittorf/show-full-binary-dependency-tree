@@ -14,11 +14,13 @@ check_tooling()
 {
   command -v 'ls'      >/dev/null || { echo "[ERROR] please install 'ls'"     ; return 1; }
   command -v 'rm'      >/dev/null || { echo "[ERROR] please install 'rm'"     ; return 1; }
+  command -v 'tr'      >/dev/null || { echo "[ERROR] please install 'tr'"     ; return 1; }
   command -v 'ldd'     >/dev/null || { echo "[ERROR] please install 'ldd'"    ; return 1; }
   command -v 'tar'     >/dev/null || { echo "[ERROR] please install 'tar'"    ; return 1; }
   command -v 'awk'     >/dev/null || { echo "[ERROR] please install 'awk'"    ; return 1; }
   command -v 'cut'     >/dev/null || { echo "[ERROR] please install 'cut'"    ; return 1; }
   command -v 'cat'     >/dev/null || { echo "[ERROR] please install 'cat'"    ; return 1; }
+  command -v 'uniq'    >/dev/null || { echo "[ERROR] please install 'uniq'"   ; return 1; }
   command -v 'grep'    >/dev/null || { echo "[ERROR] please install 'grep'"   ; return 1; }
   command -v 'sort'    >/dev/null || { echo "[ERROR] please install 'sort'"   ; return 1; }
   command -v 'tail'    >/dev/null || { echo "[ERROR] please install 'tail'"   ; return 1; }
@@ -73,7 +75,7 @@ showdeps()              # helper: list all dependencies for a binary (shared lib
 
    {
     # https://stackoverflow.com/questions/41660574/strace-a-shebang-script
-    firstline="$( head -n1 "$binary" | cut -b1-256 )"
+    firstline="$( tr -d '\0' <"$binary" | head -n1 | cut -b1-256 )"
     case "$firstline" in '#!/'*)
       shebang="$( echo "$firstline" | cut -b3- )"
       for word in $shebang; do {
