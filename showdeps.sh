@@ -10,21 +10,26 @@ EOF
 	exit 1
 }
 
-command -v 'ls'      >/dev/null || { echo "[ERROR] please install 'ls'"     ; exit 1; }
-command -v 'rm'      >/dev/null || { echo "[ERROR] please install 'rm'"     ; exit 1; }
-command -v 'ldd'     >/dev/null || { echo "[ERROR] please install 'ldd'"    ; exit 1; }
-command -v 'tar'     >/dev/null || { echo "[ERROR] please install 'tar'"    ; exit 1; }
-command -v 'awk'     >/dev/null || { echo "[ERROR] please install 'awk'"    ; exit 1; }
-command -v 'cut'     >/dev/null || { echo "[ERROR] please install 'cut'"    ; exit 1; }
-command -v 'cat'     >/dev/null || { echo "[ERROR] please install 'cat'"    ; exit 1; }
-command -v 'grep'    >/dev/null || { echo "[ERROR] please install 'grep'"   ; exit 1; }
-command -v 'sort'    >/dev/null || { echo "[ERROR] please install 'sort'"   ; exit 1; }
-command -v 'tail'    >/dev/null || { echo "[ERROR] please install 'tail'"   ; exit 1; }
-command -v 'head'    >/dev/null || { echo "[ERROR] please install 'head'"   ; exit 1; }
-command -v 'strace'  >/dev/null || { echo "[ERROR] please install 'strace'" ; exit 1; }
-command -v 'md5sum'  >/dev/null || { echo "[ERROR] please install 'md5sum'" ; exit 1; }
-command -v 'mktemp'  >/dev/null || { echo "[ERROR] please install 'mktemp'" ; exit 1; }
-command -v 'timeout' >/dev/null || { echo "[ERROR] please install 'timeout'"; exit 1; }
+check_tooling()
+{
+  command -v 'ls'      >/dev/null || { echo "[ERROR] please install 'ls'"     ; return 1; }
+  command -v 'rm'      >/dev/null || { echo "[ERROR] please install 'rm'"     ; return 1; }
+  command -v 'ldd'     >/dev/null || { echo "[ERROR] please install 'ldd'"    ; return 1; }
+  command -v 'tar'     >/dev/null || { echo "[ERROR] please install 'tar'"    ; return 1; }
+  command -v 'awk'     >/dev/null || { echo "[ERROR] please install 'awk'"    ; return 1; }
+  command -v 'cut'     >/dev/null || { echo "[ERROR] please install 'cut'"    ; return 1; }
+  command -v 'cat'     >/dev/null || { echo "[ERROR] please install 'cat'"    ; return 1; }
+  command -v 'grep'    >/dev/null || { echo "[ERROR] please install 'grep'"   ; return 1; }
+  command -v 'sort'    >/dev/null || { echo "[ERROR] please install 'sort'"   ; return 1; }
+  command -v 'tail'    >/dev/null || { echo "[ERROR] please install 'tail'"   ; return 1; }
+  command -v 'head'    >/dev/null || { echo "[ERROR] please install 'head'"   ; return 1; }
+  command -v 'strace'  >/dev/null || { echo "[ERROR] please install 'strace'" ; return 1; }
+  command -v 'md5sum'  >/dev/null || { echo "[ERROR] please install 'md5sum'" ; return 1; }
+  command -v 'mktemp'  >/dev/null || { echo "[ERROR] please install 'mktemp'" ; return 1; }
+  command -v 'timeout' >/dev/null || { echo "[ERROR] please install 'timeout'"; return 1; }
+}
+
+check_tooling || exit 1
 
 log()
 {
